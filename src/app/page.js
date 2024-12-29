@@ -1,18 +1,28 @@
+"use client";
+
 import ProductList from "@/components/ProductList";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
-const HomePage = async () => {
-  let phones = null;
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/product`);
-    if (!res.ok) {
-      throw new Error(`Error: ${res.status} ${res.statusText}`);
-    }
-    phones = await res.json();
-    phones = phones.slice(0, 10);
-  } catch (error) {
-    console.error("Error fetching phones:", error);
-  }
+const HomePage = () => {
+  const [phones, setPhones] = useState([]);
+
+  useEffect(() => {
+    const fetchPhones = async () => {
+      try {
+        const response = await fetch(`/api/product`);
+        if (!response.ok) {
+          console.log(response.statusText);
+          return;
+        }
+        const data = await response.json();
+        setPhones(data);
+      } catch (error) {
+        console.error("Error fetching phones:", error);
+      }
+    };
+    fetchPhones();
+  }, []);
 
   return (
     <div className="bg-gray-100 min-h-screen">
@@ -30,8 +40,13 @@ const HomePage = async () => {
         </Link>
       </section>
 
-      {/* Product List */}
-      {phones && <ProductList phones={phones} />}
+      {phones.length > 0 ? (
+        <ProductList phones={phones} />
+      ) : (
+        <div className="text-center text-red-500 mt-10">
+          No products available at the moment.
+        </div>
+      )}
 
       {/* View More Button */}
       <div className="flex justify-center mt-6">

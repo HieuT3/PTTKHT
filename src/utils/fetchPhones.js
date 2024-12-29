@@ -4,9 +4,8 @@ const fetchPhones = async () => {
       cache: "no-store",
     });
     if (!res.ok) {
-      throw new Error(
-        `Failed to fetch phones: ${res.status} ${res.statusText}`
-      );
+      console.log(res.statusText);
+      return null;
     }
     return await res.json();
   } catch (error) {
