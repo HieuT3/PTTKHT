@@ -31,7 +31,7 @@ const HomePage = async () => {
       </section>
 
       {/* Product List */}
-      <ProductList phones={phones} />
+      {phones && <ProductList phones={phones} />}
 
       {/* View More Button */}
       <div className="flex justify-center mt-6">
