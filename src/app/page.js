@@ -16,7 +16,7 @@ const HomePage = () => {
           return;
         }
         const data = await response.json();
-        setPhones(data);
+        setPhones(data.slice(0, 10));
       } catch (error) {
         console.error("Error fetching phones:", error);
       }

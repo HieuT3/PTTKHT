@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@/context/UserContext";
+import { toast } from "react-toastify";
+import { usePathname } from "next/navigation";
 
 export default function LoginForm() {
   const [username, setUsername] = useState("");
@@ -11,13 +13,16 @@ export default function LoginForm() {
   const [error, setError] = useState("");
   const router = useRouter();
   const { setUser } = useUser();
+  const pathname = usePathname();
+  const adminPage = pathname.includes("admin");
 
   const handleSubmitForm = async (e) => {
     e.preventDefault();
     setError("");
 
     try {
-      const response = await fetch("/api/user/login", {
+      const path = adminPage ? "/api/admin/login" : "/api/user/login";
+      const response = await fetch(`${path}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -31,7 +36,9 @@ export default function LoginForm() {
       const data = await response.json();
       console.log(data);
       setUser(data.username);
-      router.push("/");
+      if (adminPage) router.push("/admin/dashboard");
+      else router.push("/");
+      toast.success("Login Successfully!");
     } catch (error) {
       console.log(error);
     }
@@ -51,7 +58,7 @@ export default function LoginForm() {
         {/* Right Column - Form */}
         <div className="w-full lg:w-1/2 p-8">
           <h2 className="text-2xl font-semibold text-gray-700 mb-6">
-            Sign in to your account
+            Sign in to your account {adminPage ? "admin" : ""}
           </h2>
           {error && <p className="text-red-500">{error}</p>}
           <form onSubmit={handleSubmitForm}>
@@ -71,19 +78,22 @@ export default function LoginForm() {
             />
 
             {/* Remember Me and Forgot Password */}
-            <div className="flex items-center justify-between mb-6">
-              <label className="inline-flex items-center">
-                <input type="checkbox" className="form-checkbox h-5 w-5" />
-                <span className="ml-2 text-sm text-gray-600">Remember me</span>
-              </label>
-              <Link
-                className="text-sm text-blue-500 hover:underline"
-                href="/forgot-password"
-              >
-                Forgot password?
-              </Link>
-            </div>
-
+            {!adminPage && (
+              <div className="flex items-center justify-between mb-6">
+                <label className="inline-flex items-center">
+                  <input type="checkbox" className="form-checkbox h-5 w-5" />
+                  <span className="ml-2 text-sm text-gray-600">
+                    Remember me
+                  </span>
+                </label>
+                <Link
+                  className="text-sm text-blue-500 hover:underline"
+                  href="/forgot-password"
+                >
+                  Forgot password?
+                </Link>
+              </div>
+            )}
             {/* Login Button */}
             <button
               type="submit"
@@ -94,12 +104,14 @@ export default function LoginForm() {
           </form>
 
           {/* Register Link */}
-          <p className="mt-4 text-center text-sm text-gray-600">
-            Don&apos;t have an account?{" "}
-            <Link href="/register" className="text-blue-500 hover:underline">
-              Register here
-            </Link>
-          </p>
+          {!adminPage && (
+            <p className="mt-4 text-center text-sm text-gray-600">
+              Don&apos;t have an account?{" "}
+              <Link href="/register" className="text-blue-500 hover:underline">
+                Register here
+              </Link>
+            </p>
+          )}
         </div>
       </div>
     </section>

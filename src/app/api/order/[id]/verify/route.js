@@ -1,6 +1,5 @@
 import connectDB from "@/config/DBConnect";
 import Order from "@/models/Order";
-import Phone from "@/models/phone";
 import { NextResponse } from "next/server";
 
 export const GET = async (req, { params }) => {
@@ -9,11 +8,12 @@ export const GET = async (req, { params }) => {
 
     await connectDB();
 
-    const order = await Order.findById(id).populate("items.productId");
+    const order = await Order.findById(id);
     if (!order) {
       return NextResponse.json({ message: "Order not found" }, { status: 404 });
     }
-
+    order.status = "PREPARE";
+    await order.save();
     return NextResponse.json({ order }, { status: 200 });
   } catch (error) {
     console.log(error);

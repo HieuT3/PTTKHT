@@ -1,9 +1,38 @@
 import Link from "next/link";
 
-const OrderDetail = ({ order }) => {
+const OrderDetail = ({ isAdmin, order }) => {
   if (!order) {
     return <p>Loading...</p>;
   }
+
+  const handleClickButton = async () => {
+    try {
+      let status = "";
+      if (order.status === "WAITING VERIFY") status = "PREPARE";
+      else if (order.status === "PREPARE") status = "SHIPPING";
+      else status = "DONE";
+
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/order/${order._id}/update-status`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ status }),
+        }
+      );
+      console.log("TESST");
+      if (!response.ok) {
+        console.log(response.statusText);
+        return;
+      }
+      const data = await response.json();
+      window.history.back();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -11,18 +40,43 @@ const OrderDetail = ({ order }) => {
       <div className="bg-white shadow-md rounded-lg p-6">
         <h3 className="text-xl font-semibold mb-4">Order #{order._id}</h3>
         <p className="mb-2">
-          <strong>Status:</strong> Processing
+          <strong>Status:</strong> {order.status}
         </p>
         <p className="mb-2">
           <strong>Total Items:</strong>{" "}
           {order.items.reduce((total, item) => total + item.quantity, 0)}
         </p>
         <p className="mb-2">
-          <strong>Total Amount:</strong> ${order.total.toFixed(2)}
+          <strong>Amount:</strong> ${(order.total - 29.99).toFixed(2)}
         </p>
+        <p className="mb-2">
+          <strong>Tax:</strong> $29.99
+        </p>
+        <p className="mb-2">
+          <strong>Total:</strong> ${order.total.toFixed(2)}
+        </p>
+
         <p className="mb-2">
           <strong>Order Date:</strong>{" "}
           {new Date(order.createdAt).toLocaleString()}
+        </p>
+        <p className="mb-2">
+          <strong>Payment Method:</strong> {order.payment}
+        </p>
+        <p className="mb-2">
+          <strong>Payment Method:</strong> {order.shipment}
+        </p>
+        <p className="mb-2">
+          <strong>Customer Name:</strong> {order.fullname}
+        </p>
+        <p className="mb-2">
+          <strong>Customer Email:</strong> {order.email}
+        </p>
+        <p className="mb-2">
+          <strong>Customer Phone:</strong> {order.phone}
+        </p>
+        <p className="mb-2">
+          <strong>Customer Address:</strong> {order.address}
         </p>
         <h4 className="text-lg font-semibold mt-6 mb-4">Items</h4>
         <table className="w-full border-collapse">
@@ -63,6 +117,19 @@ const OrderDetail = ({ order }) => {
           </tbody>
         </table>
         <div className="mt-6 flex justify-end">
+          {isAdmin &&
+            order.status !== "DONE" &&
+            order.status !== "CANCELED" && (
+              <button
+                onClick={handleClickButton}
+                type="button"
+                className="bg-blue-500 mr-10 text-white px-4 py-2 rounded-lg hover:bg-gray-600 focus:outline-none"
+              >
+                {order.status === "WAITING VERIFY" && "Verify"}
+                {order.status === "PREPARE" && "Shipping"}
+                {order.status === "SHIPPING" && "DONE"}
+              </button>
+            )}
           <button
             type="button"
             className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 focus:outline-none"

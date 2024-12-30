@@ -3,12 +3,15 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import { useUser } from "@/context/UserContext";
 
 export default function RegisterForm() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
+  const { setUser } = useUser();
   const router = useRouter();
 
   const handleSubmitForm = async (e) => {
@@ -33,7 +36,9 @@ export default function RegisterForm() {
       }
       const data = await response.json();
       console.log(data);
+      setUser(data.username);
       router.push("/");
+      toast.success("Registered successfully!");
     } catch (error) {
       console.log(error);
     }

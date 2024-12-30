@@ -43,6 +43,18 @@ const OrderSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  status: {
+    type: String,
+    default: "WAITING VERIFY",
+  },
+  payment: {
+    type: String,
+    default: "Cash on delivery",
+  },
+  shipment: {
+    type: String,
+    default: "Drone",
+  },
 });
 
 const Order = mongoose.models.Order || mongoose.model("Order", OrderSchema);

@@ -14,7 +14,7 @@ const OrderPage = () => {
       if (!user) return;
 
       try {
-        const response = await fetch(`/api/order`);
+        const response = await fetch(`/api/order/user`);
         if (!response.ok) {
           console.log(response.statusText);
           return;
@@ -77,7 +77,7 @@ const OrderPage = () => {
                   <span
                     className={`px-2 py-1 rounded-full text-sm bg-yellow-100 text-yellow-700`}
                   >
-                    Processing
+                    {order.status}
                   </span>
                 </td>
                 <td className="p-4 border-b text-gray-800">

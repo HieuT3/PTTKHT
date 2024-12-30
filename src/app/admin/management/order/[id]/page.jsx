@@ -4,7 +4,7 @@ import OrderDetail from "@/components/OrderDetail";
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 
-const OrderDetailPage = () => {
+const OrderDetailAdminPage = () => {
   const [order, setOrder] = useState(null);
   const params = useParams();
 
@@ -27,7 +27,7 @@ const OrderDetailPage = () => {
     fetchOrderData();
   }, []);
 
-  return <OrderDetail page={""} isAdmin={false} order={order} />;
+  return <OrderDetail isAdmin={true} order={order} />;
 };
 
-export default OrderDetailPage;
+export default OrderDetailAdminPage;

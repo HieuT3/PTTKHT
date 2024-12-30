@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 const Checkout = () => {
   const [fullname, setFullname] = useState("");
@@ -35,6 +36,7 @@ const Checkout = () => {
       }
       console.log("Order successfully!");
       router.push("/order");
+      toast.success("Order successfully!");
     } catch (error) {
       console.error("Error placing order:", error);
     }
@@ -110,6 +112,24 @@ const Checkout = () => {
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
               onChange={(e) => setPhone(e.target.value)}
             />
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 font-medium mb-2">
+              Payment Method
+            </label>
+            <div className="flex items-center mb-2">
+              <input
+                type="radio"
+                id="cash"
+                name="paymentMethod"
+                checked
+                className="mr-2"
+                readOnly
+              />
+              <label htmlFor="cash" className="text-gray-700">
+                Cash on Delivery
+              </label>
+            </div>
           </div>
           <div className="flex justify-between mt-6">
             <button
