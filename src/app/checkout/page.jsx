@@ -113,24 +113,7 @@ const Checkout = () => {
               onChange={(e) => setPhone(e.target.value)}
             />
           </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 font-medium mb-2">
-              Payment Method
-            </label>
-            <div className="flex items-center mb-2">
-              <input
-                type="radio"
-                id="cash"
-                name="paymentMethod"
-                checked
-                className="mr-2"
-                readOnly
-              />
-              <label htmlFor="cash" className="text-gray-700">
-                Cash on Delivery
-              </label>
-            </div>
-          </div>
+
           <div className="flex justify-between mt-6">
             <button
               type="button"

@@ -21,3 +21,28 @@ export async function GET() {
     );
   }
 }
+
+export const POST = async (req) => {
+  try {
+    await connectDB();
+    const { title, price, quantity, imageurl } = await req.json();
+
+    const newProduct = new Phone({
+      title,
+      price,
+      quantity,
+      imageurl,
+    });
+
+    await newProduct.save();
+
+    return NextResponse.json(newProduct, { status: 201 });
+  } catch (error) {
+    console.error("Error creating product:", error);
+    return NextResponse.json(
+      { message: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
+};
+

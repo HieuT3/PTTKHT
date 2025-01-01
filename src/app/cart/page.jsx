@@ -7,6 +7,9 @@ import { useRouter } from "next/navigation";
 const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
   const [products, setProducts] = useState([]);
+  const [shippingMethod, setShippingMethod] = useState("standard");
+  const [total, setTotal] = useState(0);
+
   const { user } = useUser();
   const router = useRouter();
 
@@ -59,14 +62,29 @@ const CartPage = () => {
   };
 
   const calculateTotal = () => {
-    return cartItems.reduce((total, item) => {
+    const subtotal = cartItems.reduce((total, item) => {
       const product = getProductDetails(item.productId);
       if (product) {
-        return total + parseFloat(product.price) * item.quantity;
+        const price = parseFloat(product.price.replace(",", "."));
+        return total + price * item.quantity;
       }
+      console.log(total);
       return total;
     }, 0);
+
+    let shippingCost = 0;
+    if (shippingMethod === "express") {
+      shippingCost = 10;
+    } else if (shippingMethod === "standard") {
+      shippingCost = 5;
+    }
+
+    setTotal(subtotal + shippingCost);
   };
+
+  useEffect(() => {
+    calculateTotal();
+  }, [cartItems, products, shippingMethod]);
 
   const handleRemoveItem = async (productId) => {
     try {
@@ -201,19 +219,73 @@ const CartPage = () => {
                   );
                 })}
               </ul>
+              <div className="mt-6">
+                <h4 className="text-lg font-semibold mb-2">Shipping Method</h4>
+                <div className="flex items-center mb-2">
+                  <input
+                    type="radio"
+                    id="standard"
+                    name="shippingMethod"
+                    value="standard"
+                    checked={shippingMethod === "standard"}
+                    onChange={(e) => setShippingMethod(e.target.value)}
+                    className="mr-2"
+                  />
+                  <label htmlFor="standard" className="text-gray-700">
+                    Standard Delivery
+                  </label>
+                </div>
+                <div className="flex items-center mb-2">
+                  <input
+                    type="radio"
+                    id="express"
+                    name="shippingMethod"
+                    value="express"
+                    checked={shippingMethod === "express"}
+                    onChange={(e) => setShippingMethod(e.target.value)}
+                    className="mr-2"
+                  />
+                  <label htmlFor="express" className="text-gray-700">
+                    Express Delivery
+                  </label>
+                </div>
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700 font-medium mb-2">
+                  Payment Method
+                </label>
+                <div className="flex items-center mb-2">
+                  <input
+                    type="radio"
+                    id="cash"
+                    name="paymentMethod"
+                    checked
+                    className="mr-2"
+                    readOnly
+                  />
+                  <label htmlFor="cash" className="text-gray-700">
+                    Cash on Delivery
+                  </label>
+                </div>
+              </div>
               {/* Cart Summary */}
               <div className="mt-8">
                 <div className="flex justify-between text-lg font-bold text-gray-800">
                   <span>Subtotal</span>
-                  <span>${calculateTotal().toFixed(2)}</span>
+                  <span>
+                    $
+                    {(total - (shippingMethod === "standard" ? 5 : 10)).toFixed(
+                      3
+                    )}
+                  </span>
                 </div>
-                <div className="flex justify-between text-sm text-gray-500 mt-1">
-                  <span>Taxes</span>
-                  <span>$29.99</span>
+                <div className="flex justify-between text-lg font-bold text-gray-800 mt-4">
+                  <span>Shipping Cost</span>
+                  <span>${shippingMethod === "standard" ? 5 : 10}</span>
                 </div>
                 <div className="flex justify-between text-lg font-bold text-gray-800 mt-4">
                   <span>Total</span>
-                  <span>${(calculateTotal() + 29.99).toFixed(2)}</span>
+                  <span>${total.toFixed(3)}</span>
                 </div>
                 <button
                   className="mt-4 w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"

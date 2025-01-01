@@ -26,8 +26,19 @@ export const POST = async (req) => {
     );
 
     const total = cartItems.reduce(
-      (total, item) => total + parseFloat(item.price) * item.quantity,
+      (total, item) =>
+        total + parseFloat(item.price.replace(",", ".")) * item.quantity,
       0
+    );
+
+    await Promise.all(
+      cartItems.map(async (cartItem) => {
+        const product = await Phone.findById(cartItem.productId);
+        if (product) {
+          product.quantity -= cartItem.quantity;
+          await product.save();
+        }
+      })
     );
     const order = new Order({
       userId: session.user.id,
@@ -36,7 +47,7 @@ export const POST = async (req) => {
       address,
       phone,
       items: session.user.cart,
-      total: total + 29.99,
+      total: (total + 5).toFixed(3),
     });
 
     await order.save();

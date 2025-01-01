@@ -68,7 +68,7 @@ const OrderPage = () => {
                   )}
                 </td>
                 <td className="p-4 border-b text-gray-800">
-                  ${order.total.toFixed(2)}
+                  ${order.total.toFixed(3)}
                 </td>
                 <td className="p-4 border-b text-gray-800">
                   {new Date(order.createdAt).toLocaleString()}

@@ -47,13 +47,20 @@ const OrderDetail = ({ isAdmin, order }) => {
           {order.items.reduce((total, item) => total + item.quantity, 0)}
         </p>
         <p className="mb-2">
-          <strong>Amount:</strong> ${(order.total - 29.99).toFixed(2)}
+          <strong>Amount:</strong> $
+          {(
+            order.total - (order.shippingMethod === "Standard" ? 5 : 10)
+          ).toFixed(3)}
         </p>
         <p className="mb-2">
-          <strong>Tax:</strong> $29.99
+          <strong>Shipping Method:</strong> {order.shippingMethod}
         </p>
         <p className="mb-2">
-          <strong>Total:</strong> ${order.total.toFixed(2)}
+          <strong>Shipping Cost:</strong> $
+          {order.shippingMethod === "Standard" ? 5 : 10}
+        </p>
+        <p className="mb-2">
+          <strong>Total:</strong> ${order.total.toFixed(3)}
         </p>
 
         <p className="mb-2">
@@ -110,7 +117,7 @@ const OrderDetail = ({ isAdmin, order }) => {
                 </td>
                 <td className="p-4 border-b text-gray-800">{item.quantity}</td>
                 <td className="p-4 border-b text-gray-800">
-                  ${item.productId.price}
+                  ${item.productId.price.replace(",", ".")}
                 </td>
               </tr>
             ))}

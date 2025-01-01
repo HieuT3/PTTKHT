@@ -5,14 +5,6 @@ const phoneSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  rating: {
-    type: String,
-    required: true,
-  },
-  reviews: {
-    type: String,
-    required: true,
-  },
   price: {
     type: String,
     required: true,
@@ -21,6 +13,16 @@ const phoneSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  quantity: {
+    type: Number,
+    required: true,
+  },
+  feedbacks: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Feedback",
+    },
+  ],
 });
 
 const Phone = mongoose.models.Phone || mongoose.model("Phone", phoneSchema);

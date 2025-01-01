@@ -51,9 +51,9 @@ const OrderSchema = new mongoose.Schema({
     type: String,
     default: "Cash on delivery",
   },
-  shipment: {
+  shippingMethod: {
     type: String,
-    default: "Drone",
+    default: "Standard",
   },
 });
 

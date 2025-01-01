@@ -1,27 +1,20 @@
 import csv
 import json
+import sys
 
-max_rows = 50
-
-def csv_to_json(csv_file, json_file):
+def csv_to_json(csv_file_path, json_file_path):
     data = []
-
-    with open(csv_file, 'r', encoding='utf-8') as file:
-        csv_reader = csv.DictReader(file)
-        columns_to_keep = list(csv_reader.fieldnames[:-1])  # Bỏ cột cuối cùng
-        
-        for i, row in enumerate(csv_reader):
-            if max_rows and i >= max_rows:  # Giới hạn số dòng (nếu có)
-                break
-            filtered_row = {col: row[col] for col in columns_to_keep if col in row}
-            data.append(filtered_row)
-
-
-    with open(json_file, 'w', encoding='utf-8') as file:
-        json.dump(data, file, indent=4, ensure_ascii=False)
-
-csv_file = 'dataset.csv'
-json_file = 'dataset.json'
-
-csv_to_json(csv_file, json_file)
-print('OK')
+    
+    with open(csv_file_path, mode='r', encoding='utf-8') as csv_file:
+        csv_reader = csv.DictReader(csv_file)
+        for row in csv_reader:
+            data.append(row)
+    
+    with open(json_file_path, mode='w', encoding='utf-8') as json_file:
+        json.dump(data, json_file, indent=4)
+    
+csv_file_path = "dataset.csv"
+json_file_path = "dataset.json"
+    
+csv_to_json(csv_file_path, json_file_path)
+print(f"CSV file '{csv_file_path}' has been converted to JSON file '{json_file_path}'")

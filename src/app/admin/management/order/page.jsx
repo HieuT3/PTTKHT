@@ -115,10 +115,12 @@ const OrderManagementPage = () => {
                     )}
                   </td>
                   <td className="border-b py-2 px-4">
-                    ${order.total.toFixed(2)}
+                    ${order.total.toFixed(3)}
                   </td>
                   <td className="border-b py-2 px-4">{order.payment}</td>
-                  <td className="border-b py-2 px-4">{order.shipment}</td>
+                  <td className="border-b py-2 px-4 font-bold">
+                    {order.shippingMethod}
+                  </td>
                   <td className="border-b py-2 px-4 text-yellow-500">
                     {order.status}
                   </td>
