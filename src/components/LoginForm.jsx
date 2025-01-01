@@ -34,8 +34,7 @@ export default function LoginForm() {
         return;
       }
       const data = await response.json();
-      console.log(data);
-      setUser(data.username);
+      setUser(data);
       if (adminPage) router.push("/admin/dashboard");
       else router.push("/");
       toast.success("Login Successfully!");

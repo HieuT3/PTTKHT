@@ -41,7 +41,6 @@ export async function POST(req) {
       session.user.id = user._id;
     }
     await session.save();
-    console.log(session);
     return NextResponse.json(
       session.user,
       { message: "Login successful!" },

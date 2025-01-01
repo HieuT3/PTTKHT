@@ -26,8 +26,8 @@ export default function Header() {
           throw new Error(`Error: ${response.status} ${response.statusText}`);
         }
         const data = await response.json();
-        if (data.user) {
-          setUser(data.user);
+        if (data) {
+          setUser(data);
         }
       } catch (error) {
         console.error("Error checking session:", error);
@@ -35,7 +35,7 @@ export default function Header() {
     };
 
     checkSession();
-  }, [user]);
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -83,7 +83,7 @@ export default function Header() {
                     onClick={toggleDropdown}
                     className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-300"
                   >
-                    {user}
+                    {user.username}
                     <svg
                       className="ml-2 w-4 h-4"
                       xmlns="http://www.w3.org/2000/svg"
@@ -103,6 +103,13 @@ export default function Header() {
                   {/* Dropdown hiển thị khi nhấn */}
                   {isOpen && (
                     <div className="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
+                      <Link
+                        onClick={() => setIsOpen(false)}
+                        href={`/profile/${user.id}`}
+                        className="block px-4 py-2 text-left text-gray-700 hover:bg-gray-100 rounded-t-lg"
+                      >
+                        Profile
+                      </Link>
                       <Link
                         onClick={() => setIsOpen(false)}
                         href="/order"

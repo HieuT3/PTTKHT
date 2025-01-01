@@ -35,8 +35,7 @@ export default function RegisterForm() {
         throw new Error(`Error: ${res.status} ${res.statusText}`);
       }
       const data = await response.json();
-      console.log(data);
-      setUser(data.username);
+      setUser(data);
       router.push("/");
       toast.success("Registered successfully!");
     } catch (error) {

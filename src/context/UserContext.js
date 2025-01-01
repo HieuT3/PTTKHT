@@ -15,7 +15,7 @@ export const UserProvider = ({ children }) => {
       if (!response.ok) console.log("Get user error!");
       else {
         const data = await response.json();
-        setUser(data.username);
+        setUser(data);
         const cart = response.cart;
         if (cart) setCart(cart);
       }

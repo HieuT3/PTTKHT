@@ -23,12 +23,12 @@ const AdminDashboardPage = () => {
             </div>
           </Link>
 
-          <Link href="./management/stocks">
+          <Link href="./management/user">
             <div className="bg-white shadow rounded-lg p-6 flex flex-col items-center justify-center hover:shadow-lg cursor-pointer">
               <h2 className="text-xl font-semibold mb-2 text-blue-500">
-                Manage Stock
+                Manage User
               </h2>
-              <p className="text-gray-600">Update inventory and stock levels</p>
+              <p className="text-gray-600">View and update users</p>
             </div>
           </Link>
         </div>

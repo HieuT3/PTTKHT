@@ -8,6 +8,8 @@ import { useRouter } from "next/navigation";
 const ProductDetailPage = () => {
   const [quantity, setQuantity] = useState(1);
   const [phone, setPhone] = useState(null);
+  const [feedbacks, setFeedbacks] = useState([]);
+  const [newFeedback, setNewFeedback] = useState("");
   const params = useParams();
   const router = useRouter();
 
@@ -56,8 +58,49 @@ const ProductDetailPage = () => {
     }
   };
 
+  const fetchFeedbacks = async () => {
+    try {
+      const response = await fetch(`/api/product/${params.id}/feedbacks`);
+
+      if (!response.ok) {
+        console.log(`Error: ${response.status} ${response.statusText}`);
+        return;
+      }
+      const data = await response.json();
+      setFeedbacks(data.feedbacks);
+    } catch (err) {
+      console.error("Failed to fetch feedbacks:", err);
+    }
+  };
+
+  const handleAddFeedback = async () => {
+    if (newFeedback.trim() === "") return;
+
+    try {
+      const response = await fetch(`/api/product/${params.id}/feedbacks`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ content: newFeedback }),
+      });
+
+      if (!response.ok) {
+        console.log(`Error: ${response.status} ${response.statusText}`);
+        return;
+      }
+
+      const data = await response.json();
+      setFeedbacks((prev) => [data.feedback, ...prev]);
+      setNewFeedback("");
+    } catch (err) {
+      console.error("Failed to add feedback:", err);
+    }
+  };
+
   useEffect(() => {
     fetchData();
+    fetchFeedbacks();
   }, []);
 
   return (
@@ -127,6 +170,66 @@ const ProductDetailPage = () => {
               </div>
             </div>
           )}
+        </div>
+      </section>
+
+      {/* Feedback Section */}
+      <section className="container mx-auto px-4 py-6">
+        <div className="bg-white shadow-md rounded-lg p-6">
+          <h3 className="text-2xl font-bold text-gray-800 mb-4">Feedbacks</h3>
+
+          {/* Feedback Input */}
+          <div className="mb-6">
+            <textarea
+              value={newFeedback}
+              onChange={(e) => setNewFeedback(e.target.value)}
+              placeholder="Write your feedback here..."
+              className="w-full border border-gray-300 rounded-md p-2 mb-2"
+            ></textarea>
+            <button
+              onClick={handleAddFeedback}
+              className="bg-blue-600 text-white px-4 py-2 rounded-md font-medium hover:bg-blue-700"
+            >
+              Submit Feedback
+            </button>
+          </div>
+
+          {/* Feedback List */}
+          <div className="mt-8">
+            {feedbacks.length > 0 ? (
+              feedbacks.map((feedback, index) => (
+                <div
+                  key={feedback._id}
+                  className="border-b border-gray-200 py-4"
+                >
+                  <div className="flex items-center mb-2">
+                    <div className="flex-shrink-0">
+                      <img
+                        className="h-10 w-10 rounded-full"
+                        src={"/default-avatar.png"}
+                        alt={feedback.userId.fullname}
+                      />
+                    </div>
+                    <div className="ml-3">
+                      <p className="text-2xl font-bold text-gray-900">
+                        {feedback.userId.fullname}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        {new Date(feedback.createdAt).toLocaleString()}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="mt-2 text-gray-800">
+                    <p className="ml-12">{feedback.content}</p>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p className="text-gray-500 font-bold text-2xl">
+                No feedbacks yet.
+              </p>
+            )}
+          </div>
         </div>
       </section>
     </div>

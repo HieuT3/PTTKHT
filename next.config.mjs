@@ -5,7 +5,7 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "m.media-amazon.com",
-        pathname: "/**", // Cho phép tất cả các đường dẫn
+        pathname: "/**",
       },
     ],
   },
